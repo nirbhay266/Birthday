@@ -74,16 +74,17 @@ document.getElementById("replyBtn").onclick=()=>{
 const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzC_5wbqzDfuCypmhpNki8ZWXGVTrTB_TR2Ck2kgvI7cL-5CgnDfBL4Z_k2yAtbBMK8/exec";
 
 async function submitAnswers(){
-  const getAnswer = name => document.querySelector(`input[name="${name}"]:checked`)?.parentElement.querySelector("span")?.textContent.trim() || "";
-  const q1=getAnswer("q1");
-  const q2=getAnswer("q2");
-  const q3=getAnswer("q3");
-  const q4=getAnswer("q4");
-  const q6=getAnswer("q6");
-  const q5=document.getElementById("adviceAnswer")?.value.trim() || "";
+  const getRadio = name => document.querySelector(`input[name="${name}"]:checked`)?.parentElement.querySelector("span")?.textContent.trim() || "";
+  const getText = id => document.getElementById(id)?.value.trim() || "";
+  const answers = {
+    q1:getRadio("q1"), q2:getRadio("q2"), q3:getRadio("q3"), q4:getRadio("q4"),
+    q5:getText("answer5"), q6:getRadio("q6"), q7:getRadio("q7"), q8:getText("answer8"),
+    q9:getRadio("q9"), q10:getRadio("q10"), q11:getText("answer11"), q12:getText("answer12")
+  };
 
-  if(!q1 || !q2 || !q3 || !q4 || !q5 || !q6){
-    alert("Please answer all six questions before submitting. ❤️");
+  const missing = Object.entries(answers).find(([,value])=>!value);
+  if(missing){
+    alert("Please answer all twelve questions before submitting. ❤️");
     return;
   }
 
@@ -91,7 +92,16 @@ async function submitAnswers(){
   btn.disabled=true;
   btn.textContent="Sending your answers…";
 
-  const payload={q1,q2,q3,q4,q5,q6};
+  // Keep the existing backend completely unchanged: two website questions are
+  // packed into each of the existing six backend fields.
+  const payload={
+    q1:`Q1: ${answers.q1} | Q2: ${answers.q2}`,
+    q2:`Q3: ${answers.q3} | Q4: ${answers.q4}`,
+    q3:`Q5: ${answers.q5} | Q6: ${answers.q6}`,
+    q4:`Q7: ${answers.q7} | Q8: ${answers.q8}`,
+    q5:`Q9: ${answers.q9} | Q10: ${answers.q10}`,
+    q6:`Q11: ${answers.q11} | Q12: ${answers.q12}`
+  };
 
   try{
     await fetch(WEB_APP_URL,{
@@ -104,7 +114,7 @@ async function submitAnswers(){
     console.error("Could not send answers:",error);
   }
 
-  btn.textContent="Evidence submitted ✓";
+  btn.textContent="Answers submitted ✓";
   setTimeout(()=>{confetti();show("final")},700);
 }
 
