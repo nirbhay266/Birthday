@@ -127,7 +127,7 @@ async function submitAnswers() {
   const answers = {
     q1: getRadio("q1"), q2: getRadio("q2"), q3: getRadio("q3"), q4: getRadio("q4"),
     q5: getText("answer5"), q6: getRadio("q6"), q7: getRadio("q7"), q8: getText("answer8"),
-    q9: getRadio("q9"), q10: getRadio("q10"), q11: getText("answer11"), q12: getText("answer12")
+    q9: getRadio("q9"), q10: getRadio("q10"), q11: getRadio("q11"), q12: getText("answer12")
   };
 
   const missing = Object.entries(answers).find(([, value]) => !value);
